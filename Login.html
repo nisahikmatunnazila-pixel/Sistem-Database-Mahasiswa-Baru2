@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register | Sistem Autentikasi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Login Form -->
+        <div class="auth-card" id="loginCard">
+            <div class="auth-header">
+                <h1>Masuk</h1>
+                <p class="subtitle">Masuk ke akun Anda</p>
+            </div>
+
+            <form id="loginForm" class="auth-form">
+                <div class="input-group">
+                    <input type="email" id="loginEmail" name="email" required>
+                    <label for="loginEmail">Email atau nomor telepon</label>
+                    <span class="error-message" id="loginEmailError"></span>
+                </div>
+
+                <div class="input-group">
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" name="password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                    <label for="loginPassword">Sandi</label>
+                    <span class="error-message" id="loginPasswordError"></span>
+                </div>
+
+                <div class="remember-forgot">
+                    <label class="checkbox">
+                        <input type="checkbox" id="rememberMe" name="remember">
+                        <span>Ingat saya</span>
+                    </label>
+                    <a href="javascript:void(0)" class="forgot-link">Lupa sandi?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+
+                <div class="success-message" id="loginSuccess"></div>
+                <div class="error-container" id="loginError"></div>
+
+                <div class="divider">
+                    <span>atau</span>
+                </div>
+
+                <div class="social-login">
+                    <button type="button" class="btn btn-social">
+                        <span class="icon">📱</span> Google
+                    </button>
+                    <button type="button" class="btn btn-social">
+                        <span class="icon">f</span> Facebook
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                Belum punya akun? 
+                <a href="javascript:void(0)" class="link" onclick="switchToRegister()">Daftar di sini</a>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div class="auth-card hidden" id="registerCard">
+            <div class="auth-header">
+                <h1>Daftar</h1>
+                <p class="subtitle">Buat akun baru Anda</p>
+            </div>
+
+            <form id="registerForm" class="auth-form">
+                <div class="input-group">
+                    <input type="text" id="registerName" name="name" required>
+                    <label for="registerName">Nama Lengkap</label>
+                    <span class="error-message" id="registerNameError"></span>
+                </div>
+
+                <div class="input-group">
+                    <input type="email" id="registerEmail" name="email" required>
+                    <label for="registerEmail">Email</label>
+                    <span class="error-message" id="registerEmailError"></span>
+                </div>
+
+                <div class="input-group">
+                    <div class="password-wrapper">
+                        <input type="password" id="registerPassword" name="password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('registerPassword')">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                    <label for="registerPassword">Sandi (min. 8 karakter)</label>
+                    <div class="password-strength" id="passwordStrength"></div>
+                    <span class="error-message" id="registerPasswordError"></span>
+                </div>
+
+                <div class="input-group">
+                    <div class="password-wrapper">
+                        <input type="password" id="registerConfirm" name="confirm" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('registerConfirm')">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                    <label for="registerConfirm">Konfirmasi Sandi</label>
+                    <span class="error-message" id="registerConfirmError"></span>
+                </div>
+
+                <label class="checkbox">
+                    <input type="checkbox" id="agreeTerms" name="agree" required>
+                    <span>Saya setuju dengan <a href="#" class="link-small">Ketentuan Layanan</a></span>
+                </label>
+
+                <button type="submit" class="btn btn-primary btn-block">Daftar</button>
+
+                <div class="success-message" id="registerSuccess"></div>
+                <div class="error-container" id="registerError"></div>
+            </form>
+
+            <div class="auth-footer">
+                Sudah punya akun? 
+                <a href="javascript:void(0)" class="link" onclick="switchToLogin()">Masuk di sini</a>
+            </div>
+        </div>
+
+        <!-- Dashboard / Data Mahasiswa -->
+        <div class="dashboard-container hidden" id="dashboardContainer">
+            <div class="dashboard-header">
+                <div class="header-top">
+                    <h1>📋 Data Mahasiswa</h1>
+                    <div style="display: flex; gap: 1em; align-items: center;">
+                        <button class="btn btn-darkmode" id="darkModeToggle" title="Dark Mode">🌙</button>
+                        <button class="btn btn-danger" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+                <p class="welcome-message" id="welcomeMessage"></p>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="dashboard-controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Cari nama atau NIM..." onkeyup="filterMahasiswa()">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="filter-options">
+                    <select id="filterStatus" onchange="filterMahasiswa()">
+                        <option value="">Semua Status</option>
+                        <option value="Aktif">Aktif</option>
+                        <option value="Lulus">Lulus</option>
+                        <option value="Nonaktif">Nonaktif</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-container">
+                <div class="stat-card animated">
+                    <span class="stat-icon">👥</span>
+                    <div class="stat-info">
+                        <p class="stat-label">Total Mahasiswa</p>
+                        <p class="stat-value" id="totalStats">0</p>
+                    </div>
+                </div>
+                <div class="stat-card animated">
+                    <span class="stat-icon">✅</span>
+                    <div class="stat-info">
+                        <p class="stat-label">Aktif</p>
+                        <p class="stat-value" id="activeStats">0</p>
+                    </div>
+                </div>
+                <div class="stat-card animated">
+                    <span class="stat-icon">🎓</span>
+                    <div class="stat-info">
+                        <p class="stat-label">Lulus</p>
+                        <p class="stat-value" id="graduatedStats">0</p>
+                    </div>
+                </div>
+            </div>
+            <div style="margin: 1em 0;">
+                <input type="file" id="importCsv" accept=".csv" style="display:none;" onchange="importMahasiswaCsv(event)">
+                <button class="btn btn-social" onclick="document.getElementById('importCsv').click()">⬆️ Import Data CSV</button>
+                <span id="importStatus" style="margin-left:1em;color:#ff6a00;font-weight:600;"></span>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>NIM</th>
+                            <th>Nama Lengkap</th>
+                            <th>Program Studi</th>
+                            <th>Angkatan</th>
+                            <th>Status</th>
+                            <th>Email</th>
+                            <th>Kontak</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr class="loading-row">
+                            <td colspan="9" style="text-align: center; padding: 30px;">⏳ Memuat data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- No Data Message -->
+            <div class="no-data" id="noDataMessage" style="display: none;">
+                <p>📭 Tidak ada data mahasiswa yang sesuai</p>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="paginationContainer" style="display: none;">
+                <button class="btn btn-small" onclick="previousPage()" id="prevBtn">← Sebelumnya</button>
+                <span id="pageInfo" class="page-info"></span>
+                <button class="btn btn-small" onclick="nextPage()" id="nextBtn">Selanjutnya →</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
